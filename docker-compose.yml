@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     container_name: portfolio-dev
+    command: bash -c "npm start"
     volumes:
       # Mount project directory for real-time sync
       - .:/workspace
