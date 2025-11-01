@@ -1,0 +1,40 @@
+# Dependencies (installed in container)
+node_modules
+__pycache__
+*.pyc
+.venv
+venv
+vendor
+
+# Version control
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env.local
+.env.production
+
+# Claude and cloud
+.claude
+.vercel
+
+# Build outputs
+dist
+build
+target
+
+# Other
+coverage

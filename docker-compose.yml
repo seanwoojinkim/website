@@ -1,0 +1,28 @@
+services:
+  portfolio-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: portfolio-dev
+    volumes:
+      # Mount project directory for real-time sync
+      - .:/workspace
+      # Prevent node_modules from being overwritten
+      - /workspace/node_modules
+      # Named volume for Claude data persistence
+      - claude-data:/home/node
+    ports:
+      - "8081:8000"
+    environment:
+      - NODE_ENV=development
+      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+    stdin_open: true
+    tty: true
+
+volumes:
+  claude-data:
