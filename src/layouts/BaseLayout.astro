@@ -1,5 +1,7 @@
 ---
 import '../styles/style.css';
+import { ViewTransitions } from 'astro:transitions';
+import KoiBackground from '../components/KoiBackground.astro';
 
 interface Props {
   title: string;
@@ -17,6 +19,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
+    <ViewTransitions />
 
     <!-- SEO Meta Tags -->
     <meta name="description" content={description}>
@@ -37,9 +40,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="alternate" type="application/rss+xml" title="Sean Kim — Writing" href="/rss.xml" />
 </head>
 <body>
+    <KoiBackground />
+
     <div class="container">
         <nav>
-            <a href="/" class="logo">Sean Kim</a>
+            <a href="/" class="logo">Sean Woojin Kim</a>
             <div class="nav-links">
                 <a href="/" class={activePage === 'work' ? 'active' : ''}>Work</a>
                 <a href="/writing" class={activePage === 'writing' ? 'active' : ''}>Writing</a>

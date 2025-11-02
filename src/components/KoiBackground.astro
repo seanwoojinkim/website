@@ -2,7 +2,7 @@
 // KoiBackground.astro - Animated koi swimming in the background
 ---
 
-<div id="koi-canvas"></div>
+<div id="koi-canvas" transition:name="koi-canvas" transition:persist></div>
 
 <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
 
@@ -15,12 +15,18 @@
 
   // Wait for p5 to load from CDN
   function initKoi() {
+    // Check if already initialized
+    if (window.koiInitialized) {
+      console.log('🐟 Koi already swimming, skipping re-init');
+      return;
+    }
+
     if (typeof p5 === 'undefined') {
       setTimeout(initKoi, 50);
       return;
     }
 
-    console.log('🐟 Initializing koi...');
+    console.log('🐟 Initializing koi for first time...');
 
     // Global state
     let flock;
@@ -190,10 +196,16 @@
 
     // Initialize p5
     new p5(sketch);
+
+    // Mark as initialized
+    window.koiInitialized = true;
   }
 
   // Start initialization
   initKoi();
+
+  // Re-run init on view transitions (but will skip if already initialized)
+  document.addEventListener('astro:after-swap', initKoi);
 </script>
 
 <style>

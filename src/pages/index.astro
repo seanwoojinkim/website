@@ -2,15 +2,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import FillerBlock from '../components/FillerBlock.astro';
-import KoiBackground from '../components/KoiBackground.astro';
 import { getCollection } from 'astro:content';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout title="Sean Kim — Interactive Systems" activePage="work">
-    <KoiBackground />
-
     <header>
         <h1>Selected Work</h1>
         <p class="subtitle">
