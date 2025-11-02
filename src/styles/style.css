@@ -3,8 +3,38 @@
  * Upscale minimalist aesthetic with premium typography
  */
 
-/* Import premium typefaces from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap');
+/* Apercu font faces */
+@font-face {
+    font-family: 'Apercu';
+    src: url('/fonts/apercu/Apercu-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Apercu';
+    src: url('/fonts/apercu/Apercu-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Apercu';
+    src: url('/fonts/apercu/Apercu-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Apercu';
+    src: url('/fonts/apercu/Apercu-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
 
 /* Reset */
 * {
@@ -28,19 +58,19 @@
 
 /* Base */
 body {
-    /* Body text: Inter (refined grotesque, excellent readability) */
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    /* Body text: Apercu (geometric grotesque with personality) */
+    font-family: 'Apercu', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
     font-weight: 400;
 
-    /* Subtle animated gradient background with color */
+    /* Animated gradient background with subtle saturation */
     background: linear-gradient(
         135deg,
-        #ffffff 0%,
-        #fef9f5 20%,
-        #f5f8fa 40%,
+        #fffcf8 0%,
+        #fef5ed 20%,
+        #f5f9fb 40%,
         #faf5f8 60%,
-        #f5faf8 80%,
-        #ffffff 100%
+        #f5fbf9 80%,
+        #fffcf8 100%
     );
     background-size: 400% 400%;
     animation: gradient-shift 25s ease infinite;
@@ -70,7 +100,7 @@ nav {
 }
 
 .logo {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Apercu', sans-serif;
     font-size: 18px;
     font-weight: 400;
     letter-spacing: -0.01em;
@@ -120,7 +150,7 @@ header {
 }
 
 h1 {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Apercu', sans-serif;
     font-size: 28px;
     font-weight: 500;
     letter-spacing: -0.02em;
@@ -184,7 +214,7 @@ h1 {
 }
 
 .card-title {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Apercu', sans-serif;
     font-size: 22px;
     font-weight: 400;
     margin-bottom: 16px;
@@ -281,7 +311,7 @@ h1 {
 }
 
 .writing-content h3 {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Apercu', sans-serif;
     font-size: 20px;
     font-weight: 400;
     margin-bottom: 12px;
@@ -329,7 +359,7 @@ h1 {
 }
 
 .about-content h2 {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Apercu', sans-serif;
     font-size: 20px;
     font-weight: 400;
     margin-bottom: 20px;
