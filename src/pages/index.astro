@@ -5,6 +5,11 @@ import FillerBlock from '../components/FillerBlock.astro';
 import { getCollection } from 'astro:content';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+// Calculate filler blocks needed to complete the grid
+// Grid is typically 3 columns on desktop (auto-fit, minmax(280px, 1fr))
+const COLUMNS = 3;
+const fillersNeeded = (COLUMNS - (projects.length % COLUMNS)) % COLUMNS;
 ---
 
 <BaseLayout title="Sean Kim — Interactive Systems" activePage="work">
@@ -26,7 +31,8 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
                 buttons={project.data.buttons}
             />
         ))}
-        <FillerBlock variant={1} />
-        <FillerBlock variant={2} />
+        {Array.from({ length: fillersNeeded }, (_, i) => (
+            <FillerBlock variant={(i % 3) + 1} />
+        ))}
     </div>
 </BaseLayout>

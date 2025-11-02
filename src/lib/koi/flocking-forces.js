@@ -97,7 +97,7 @@ export function calculateSeparation(boid, neighbors, perceptionRadius, maxSpeed,
             other.position.x, other.position.y
         );
 
-        if (d < perceptionRadius * 0.7) {
+        if (d < perceptionRadius * 0.9) {
             let diff = p5.Vector.sub(boid.position, other.position);
 
             // Prevent extreme forces when very close

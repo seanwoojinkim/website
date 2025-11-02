@@ -55,10 +55,10 @@
       numBoids: 5,  // Increased from 3 to 5 koi
       maxSpeed: 0.6,  // Increased from 0.4 for more movement
       maxForce: 0.05, // Increased from 0.03 for more responsive steering
-      separationWeight: 0.9,
-      alignmentWeight: 1.2,  // Increased to keep them moving together
-      cohesionWeight: 1.0,   // Increased to keep them grouped
-      attractionWeight: 1.2  // Increased mouse attraction strength
+      separationWeight: 1.8,  // Increased for more personal space
+      alignmentWeight: 0.6,   // Reduced to prevent single-file behavior
+      cohesionWeight: 0.8,    // Slightly reduced for looser grouping
+      attractionWeight: 1.2   // Mouse attraction strength
     };
 
     // Mouse tracking

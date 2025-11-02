@@ -9,7 +9,7 @@ export const PHYSICS_CONFIG = {
     VELOCITY_SMOOTHING: 0.15,
 
     // Perception - how far koi can "see"
-    PERCEPTION_RADIUS: 150,  // Increased for portfolio page dimensions
+    PERCEPTION_RADIUS: 80,  // Smaller radius for better spacing
 
     // Damping - smooth turns
     DAMPING_COEFFICIENT: 0.45,
