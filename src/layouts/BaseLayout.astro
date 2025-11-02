@@ -59,10 +59,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <div class="container">
         <nav>
-            <a href="/" class="logo">
-                <img src="/icon.png" alt="" class="logo-icon" />
-                Sean Woojin Kim
-            </a>
+            <a href="/" class="logo">Sean Woojin Kim</a>
             <div class="nav-links">
                 <a href="/" class={activePage === 'work' ? 'active' : ''}>Work</a>
                 <a href="/writing" class={activePage === 'writing' ? 'active' : ''}>Writing</a>
