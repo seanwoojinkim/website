@@ -255,10 +255,19 @@ nav {
     text-decoration: none;
     color: var(--color-text-primary);
     transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
 }
 
 .logo:hover {
     opacity: 0.6;
+}
+
+.logo-icon {
+    width: 32px;
+    height: 32px;
+    display: block;
 }
 
 .nav-links {
