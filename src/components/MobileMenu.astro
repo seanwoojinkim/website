@@ -1,0 +1,305 @@
+---
+// MobileMenu.astro - Slide-out mobile navigation drawer
+
+interface Props {
+  activePage?: 'work' | 'writing' | 'about';
+}
+
+const { activePage } = Astro.props;
+---
+
+<!-- Backdrop overlay -->
+<div id="mobile-overlay" class="mobile-overlay" aria-hidden="true"></div>
+
+<!-- Mobile menu drawer -->
+<div
+  id="mobile-menu"
+  class="mobile-menu"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Mobile navigation"
+>
+  <div class="mobile-menu-content">
+    <!-- Navigation links -->
+    <nav class="mobile-nav">
+      <a href="/" class={`mobile-nav-link ${activePage === 'work' ? 'active' : ''}`}>
+        Work
+      </a>
+      <a href="/writing" class={`mobile-nav-link ${activePage === 'writing' ? 'active' : ''}`}>
+        Notes
+      </a>
+      <a href="/about" class={`mobile-nav-link ${activePage === 'about' ? 'active' : ''}`}>
+        About
+      </a>
+    </nav>
+
+    <!-- Social links -->
+    <div class="mobile-social">
+      <div class="mobile-social-label">Connect</div>
+      <a href="mailto:seanwoojinkim@gmail.com" class="mobile-social-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+        Email
+      </a>
+      <a href="https://github.com/seanwoojinkim" target="_blank" rel="noopener noreferrer" class="mobile-social-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+        </svg>
+        GitHub
+      </a>
+      <a href="https://instagram.com/seanwooj" target="_blank" rel="noopener noreferrer" class="mobile-social-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+        </svg>
+        Instagram
+      </a>
+    </div>
+  </div>
+
+  <!-- Theme toggle pinned to bottom -->
+  <button
+    id="mobile-theme-toggle"
+    class="mobile-theme-toggle"
+    aria-label="Toggle dark mode"
+    type="button"
+  >
+    <svg class="theme-icon sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+    <svg class="theme-icon moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+    <span class="theme-text light-mode-text">Light Mode</span>
+    <span class="theme-text dark-mode-text">Dark Mode</span>
+  </button>
+</div>
+
+<style>
+  /* Backdrop overlay */
+  .mobile-overlay {
+    display: none; /* Hidden on desktop */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 400ms ease;
+    z-index: 999;
+  }
+
+  .mobile-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Mobile menu drawer */
+  .mobile-menu {
+    display: none; /* Hidden on desktop */
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--color-bg-secondary);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-left: 1px solid var(--color-border-component);
+    transform: translateX(100%);
+    transition: transform 400ms ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-menu.open {
+    transform: translateX(0);
+  }
+
+  /* Content area (scrollable, grows to fill space) */
+  .mobile-menu-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: var(--space-4) var(--space-5) 0 var(--space-5);
+  }
+
+  /* Navigation links */
+  .mobile-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+    padding-bottom: var(--space-5);
+    border-bottom: none; /* Override global nav border */
+    margin-bottom: 0; /* Remove global nav margin */
+  }
+
+  .mobile-nav-link {
+    font-size: var(--text-lg);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    padding: var(--space-2) 0;
+    transition: color 0.2s ease;
+    position: relative;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .mobile-nav-link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .mobile-nav-link:focus {
+    outline: 2px solid var(--color-border-interactive);
+    outline-offset: 2px;
+  }
+
+  /* Active page indicator - underline */
+  .mobile-nav-link.active {
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  .mobile-nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: var(--space-2);
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--color-text-primary);
+  }
+
+  /* Theme toggle pinned to bottom */
+  .mobile-theme-toggle {
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-tertiary);
+    font-size: var(--text-sm);
+    font-weight: 400;
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--color-border-minor);
+    transition: color 0.2s ease;
+  }
+
+  .mobile-theme-toggle:hover {
+    color: var(--color-text-secondary);
+  }
+
+  .mobile-theme-toggle:focus {
+    outline: 2px solid var(--color-border-interactive);
+    outline-offset: 2px;
+  }
+
+  .mobile-theme-toggle .theme-icon {
+    flex-shrink: 0;
+  }
+
+  .mobile-theme-toggle .theme-text {
+    flex-grow: 0;
+  }
+
+  /* Show/hide icons and text based on theme */
+  .sun-icon,
+  .light-mode-text {
+    display: none;
+  }
+
+  .moon-icon,
+  .dark-mode-text {
+    display: block;
+  }
+
+  html.dark-mode .sun-icon,
+  html.dark-mode .light-mode-text {
+    display: block;
+  }
+
+  html.dark-mode .moon-icon,
+  html.dark-mode .dark-mode-text {
+    display: none;
+  }
+
+  /* Social links section */
+  .mobile-social {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border-minor);
+  }
+
+  .mobile-social-label {
+    font-size: var(--text-xs);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-1);
+  }
+
+  .mobile-social-link {
+    font-size: var(--text-sm);
+    font-weight: 400;
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    padding: var(--space-1) 0;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .mobile-social-link svg {
+    flex-shrink: 0;
+  }
+
+  .mobile-social-link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .mobile-social-link:focus {
+    outline: 2px solid var(--color-border-interactive);
+    outline-offset: 2px;
+  }
+
+  /* Show on mobile only */
+  @media (max-width: 767px) {
+    .mobile-overlay {
+      display: block;
+    }
+
+    .mobile-menu {
+      display: flex;
+    }
+  }
+</style>

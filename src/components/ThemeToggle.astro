@@ -68,7 +68,7 @@
 <script>
   function initThemeToggle() {
     const toggle = document.getElementById('theme-toggle');
-    if (!toggle) return;
+    if (!toggle) return function() {}; // Return no-op cleanup
 
     const html = document.documentElement;
 
@@ -108,11 +108,21 @@
 
     // Listen for clicks
     toggle.addEventListener('click', toggleTheme);
+
+    // Return cleanup function
+    return function cleanup() {
+      toggle.removeEventListener('click', toggleTheme);
+    };
   }
 
   // Initialize on load
-  initThemeToggle();
+  let themeCleanup = initThemeToggle();
 
   // Re-initialize after view transitions
-  document.addEventListener('astro:after-swap', initThemeToggle);
+  document.addEventListener('astro:after-swap', () => {
+    if (themeCleanup) {
+      themeCleanup();
+    }
+    themeCleanup = initThemeToggle();
+  });
 </script>

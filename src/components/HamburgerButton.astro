@@ -1,0 +1,80 @@
+---
+// HamburgerButton.astro - Animated hamburger menu button
+---
+
+<button
+  id="hamburger-button"
+  class="hamburger-button"
+  aria-label="Open menu"
+  aria-expanded="false"
+  aria-controls="mobile-menu"
+  type="button"
+>
+  <span class="hamburger-line"></span>
+  <span class="hamburger-line"></span>
+  <span class="hamburger-line"></span>
+</button>
+
+<style>
+  .hamburger-button {
+    display: none; /* Hidden by default, shown on mobile via media query */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+    background: none;
+    border: none;
+    padding: 12px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1001;
+  }
+
+  .hamburger-button:focus {
+    outline: 2px solid var(--color-border-interactive);
+    outline-offset: 2px;
+  }
+
+  .hamburger-line {
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-text-primary);
+    transition: all 400ms ease;
+    position: absolute;
+  }
+
+  .hamburger-line:nth-child(1) {
+    top: 14px;
+  }
+
+  .hamburger-line:nth-child(2) {
+    top: 23px;
+  }
+
+  .hamburger-line:nth-child(3) {
+    top: 32px;
+  }
+
+  /* Open state - transform to X */
+  .hamburger-button.open .hamburger-line:nth-child(1) {
+    top: 23px;
+    transform: rotate(45deg);
+  }
+
+  .hamburger-button.open .hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger-button.open .hamburger-line:nth-child(3) {
+    top: 23px;
+    transform: rotate(-45deg);
+  }
+
+  /* Show on mobile only */
+  @media (max-width: 767px) {
+    .hamburger-button {
+      display: flex;
+    }
+  }
+</style>

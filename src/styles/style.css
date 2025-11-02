@@ -244,7 +244,7 @@ nav {
     border-bottom: var(--border-major);
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
 }
 
 .logo {
@@ -289,6 +289,15 @@ nav {
     right: 0;
     height: 2px;
     background: var(--color-text-primary);
+}
+
+/* Mobile menu hidden on desktop */
+@media (min-width: 768px) {
+    .hamburger-button,
+    .mobile-menu,
+    .mobile-overlay {
+        display: none !important;
+    }
 }
 
 /* Header */
@@ -667,13 +676,14 @@ footer a:hover {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .container {
         padding: var(--space-5) var(--space-3);
     }
 
+    /* Hide desktop navigation on mobile */
     .nav-links {
-        gap: var(--space-3);
+        display: none;
     }
 
     .grid {

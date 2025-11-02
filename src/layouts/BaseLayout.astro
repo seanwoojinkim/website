@@ -3,6 +3,8 @@ import '../styles/style.css';
 import { ViewTransitions } from 'astro:transitions';
 import KoiBackground from '../components/KoiBackground.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import HamburgerButton from '../components/HamburgerButton.astro';
+import MobileMenu from '../components/MobileMenu.astro';
 
 interface Props {
   title: string;
@@ -52,7 +54,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:description" content={description}>
 
     <!-- RSS Feed -->
-    <link rel="alternate" type="application/rss+xml" title="Sean Kim — Writing" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Sean Kim — Notes" href="/rss.xml" />
 </head>
 <body>
     <KoiBackground />
@@ -60,13 +62,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <div class="container">
         <nav>
             <a href="/" class="logo">Sean Woojin Kim</a>
+
+            <!-- Desktop navigation (hidden on mobile) -->
             <div class="nav-links">
                 <a href="/" class={activePage === 'work' ? 'active' : ''}>Work</a>
-                <a href="/writing" class={activePage === 'writing' ? 'active' : ''}>Writing</a>
+                <a href="/writing" class={activePage === 'writing' ? 'active' : ''}>Notes</a>
                 <a href="/about" class={activePage === 'about' ? 'active' : ''}>About</a>
                 <ThemeToggle />
             </div>
+
+            <!-- Mobile hamburger button (hidden on desktop) -->
+            <HamburgerButton />
         </nav>
+
+        <!-- Mobile menu drawer (hidden on desktop) -->
+        <MobileMenu activePage={activePage} />
 
         <slot />
 
@@ -79,5 +89,201 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             </div>
         </footer>
     </div>
+
+    <script>
+      function initMobileMenu() {
+        // Get DOM elements
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+
+        // Check if elements exist (they won't on desktop)
+        if (!hamburgerButton || !mobileMenu || !mobileOverlay) {
+          return function() {}; // Return no-op cleanup function
+        }
+
+        // State
+        let isMenuOpen = false;
+        let previousFocus = null;
+
+        // Get all focusable elements in the menu
+        function getFocusableElements() {
+          return Array.from(
+            mobileMenu.querySelectorAll(
+              'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )
+          );
+        }
+
+        // Open menu
+        function openMenu() {
+          isMenuOpen = true;
+          previousFocus = document.activeElement;
+
+          // Add open classes
+          mobileMenu.classList.add('open');
+          mobileOverlay.classList.add('open');
+          hamburgerButton.classList.add('open');
+
+          // Update ARIA attributes
+          mobileMenu.setAttribute('aria-hidden', 'false');
+          hamburgerButton.setAttribute('aria-expanded', 'true');
+          hamburgerButton.setAttribute('aria-label', 'Close menu');
+
+          // Lock body scroll
+          document.body.style.overflow = 'hidden';
+
+          // Focus first focusable element in menu
+          const focusableElements = getFocusableElements();
+          if (focusableElements.length > 0) {
+            focusableElements[0].focus();
+          }
+        }
+
+        // Close menu
+        function closeMenu() {
+          isMenuOpen = false;
+
+          // Remove open classes
+          mobileMenu.classList.remove('open');
+          mobileOverlay.classList.remove('open');
+          hamburgerButton.classList.remove('open');
+
+          // Update ARIA attributes
+          mobileMenu.setAttribute('aria-hidden', 'true');
+          hamburgerButton.setAttribute('aria-expanded', 'false');
+          hamburgerButton.setAttribute('aria-label', 'Open menu');
+
+          // Unlock body scroll
+          document.body.style.overflow = '';
+
+          // Return focus to hamburger button
+          if (previousFocus && previousFocus.focus) {
+            previousFocus.focus();
+          }
+        }
+
+        // Toggle menu
+        function toggleMenu() {
+          if (isMenuOpen) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
+        }
+
+        // Focus trap - handle Tab key
+        function handleTabKey(event) {
+          if (!isMenuOpen) return;
+
+          const focusableElements = getFocusableElements();
+          if (focusableElements.length === 0) return;
+
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+
+          if (event.shiftKey) {
+            // Shift + Tab
+            if (document.activeElement === firstElement) {
+              event.preventDefault();
+              lastElement.focus();
+            }
+          } else {
+            // Tab
+            if (document.activeElement === lastElement) {
+              event.preventDefault();
+              firstElement.focus();
+            }
+          }
+        }
+
+        // Handle Escape key
+        function handleEscapeKey(event) {
+          if (event.key === 'Escape' && isMenuOpen) {
+            closeMenu();
+          }
+        }
+
+        // Handle keyboard events
+        function handleKeyDown(event) {
+          if (event.key === 'Tab') {
+            handleTabKey(event);
+          } else if (event.key === 'Escape') {
+            handleEscapeKey(event);
+          }
+        }
+
+        // Close menu when clicking navigation links
+        function handleNavLinkClick() {
+          closeMenu();
+        }
+
+        // Add event listeners
+        hamburgerButton.addEventListener('click', toggleMenu);
+        mobileOverlay.addEventListener('click', closeMenu);
+        document.addEventListener('keydown', handleKeyDown);
+
+        // Add click listeners to all navigation links
+        const navLinks = mobileMenu.querySelectorAll('.mobile-nav-link');
+        navLinks.forEach((link) => {
+          link.addEventListener('click', handleNavLinkClick);
+        });
+
+        // Handle mobile theme toggle
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        function handleMobileThemeToggle() {
+          const html = document.documentElement;
+          const currentTheme = html.classList.contains('dark-mode') ? 'dark' : 'light';
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          if (nextTheme === 'dark') {
+            html.classList.add('dark-mode');
+          } else {
+            html.classList.remove('dark-mode');
+          }
+          localStorage.setItem('theme-preference', nextTheme);
+
+          // Update aria-label
+          const newLabel = nextTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+          mobileThemeToggle.setAttribute('aria-label', newLabel);
+
+          // Also update desktop theme toggle if it exists
+          const desktopToggle = document.getElementById('theme-toggle');
+          if (desktopToggle) {
+            desktopToggle.setAttribute('aria-label', newLabel);
+          }
+        }
+
+        if (mobileThemeToggle) {
+          mobileThemeToggle.addEventListener('click', handleMobileThemeToggle);
+        }
+
+        // Cleanup function (for View Transitions)
+        return function cleanup() {
+          hamburgerButton.removeEventListener('click', toggleMenu);
+          mobileOverlay.removeEventListener('click', closeMenu);
+          document.removeEventListener('keydown', handleKeyDown);
+          navLinks.forEach((link) => {
+            link.removeEventListener('click', handleNavLinkClick);
+          });
+          if (mobileThemeToggle) {
+            mobileThemeToggle.removeEventListener('click', handleMobileThemeToggle);
+          }
+        };
+      }
+
+      // Initialize on page load
+      let cleanup = initMobileMenu();
+
+      // Re-initialize after View Transitions
+      document.addEventListener('astro:after-swap', () => {
+        // Run cleanup if it exists
+        if (cleanup) {
+          cleanup();
+        }
+        // Re-initialize
+        cleanup = initMobileMenu();
+      });
+    </script>
 </body>
 </html>
