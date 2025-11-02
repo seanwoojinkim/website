@@ -1,5 +1,6 @@
 ---
 title: "About"
+subtitle: "Dilettantish, distracted, ovewhelmed"
 ---
 
 I'm Sean Kim, a designer and coder in Brooklyn. 
