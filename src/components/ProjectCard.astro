@@ -1,0 +1,32 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  status: string;
+  category: string;
+  number: string;
+  buttons: Array<{
+    text: string;
+    url: string;
+    style: 'primary' | 'secondary';
+  }>;
+}
+
+const { title, description, status, category, number, buttons } = Astro.props;
+---
+
+<div class="card">
+    <div class="status">{status}</div>
+    <div class="card-number">{number} — {category}</div>
+    <h2 class="card-title">{title}</h2>
+    <p class="card-desc">{description}</p>
+    <div class="button-group">
+        {buttons.map(btn => (
+            btn.style === 'primary' ? (
+                <a href={btn.url} target="_blank" class="btn">{btn.text}</a>
+            ) : (
+                <a href={btn.url} target="_blank" class="btn-secondary">{btn.text}</a>
+            )
+        ))}
+    </div>
+</div>

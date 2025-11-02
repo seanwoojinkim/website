@@ -1,0 +1,15 @@
+{
+  "title": "Coherence Visualization",
+  "description": "Visualization showing when two people's heart rates sync up. The particles move from scattered to synchronized as physiological coherence increases.",
+  "status": "2025",
+  "year": "2025",
+  "category": "Biometric",
+  "order": 3,
+  "buttons": [
+    {
+      "text": "Launch",
+      "url": "https://p5-visualizations.vercel.app/coherence/",
+      "style": "primary"
+    }
+  ]
+}

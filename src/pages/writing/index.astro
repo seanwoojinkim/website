@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WritingItem from '../../components/WritingItem.astro';
+import { getCollection } from 'astro:content';
+
+const writing = (await getCollection('writing')).sort((a, b) =>
+  b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<BaseLayout title="Writing — Sean Kim" activePage="writing">
+    <header>
+        <h1>Writing</h1>
+        <p class="subtitle">
+            In progress thoughts as I try to figure it out how to build things.
+        </p>
+    </header>
+
+    <div style="margin-bottom: 40px;">
+        <a href="/rss.xml" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: #666; text-decoration: none; border-bottom: 1px solid #666;">
+            RSS Feed
+        </a>
+    </div>
+
+    <div class="writing-list">
+        {writing.map(post => (
+            <WritingItem
+                title={post.data.title}
+                excerpt={post.data.excerpt}
+                date={post.data.date}
+                tags={post.data.tags}
+                slug={post.slug}
+                status={post.data.status}
+            />
+        ))}
+    </div>
+</BaseLayout>

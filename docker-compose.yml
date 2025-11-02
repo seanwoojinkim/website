@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     container_name: portfolio-dev
-    command: bash -c "npm start"
+    command: bash -c "npx astro dev --host"
     volumes:
       # Mount project directory for real-time sync
       - .:/workspace
@@ -13,7 +13,7 @@ services:
       # Named volume for Claude data persistence
       - claude-data:/home/node
     ports:
-      - "8081:8000"
+      - "8081:4321"
     environment:
       - NODE_ENV=development
       # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}

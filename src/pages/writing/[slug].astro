@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const writing = await getCollection('writing', ({ data }) => {
+    return data.status === 'published';
+  });
+
+  return writing.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+};
+---
+
+<BaseLayout title={`${post.data.title} — sean kim`} activePage="writing">
+    <article class="about-content">
+        <header style="margin-bottom: 40px;">
+            <h1 style="margin-bottom: 12px;">{post.data.title}</h1>
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div class="writing-date">{formatDate(post.data.date)}</div>
+                <div class="writing-tags">
+                    {post.data.tags.map(tag => <span class="tag">{tag}</span>)}
+                </div>
+            </div>
+            <p class="article-excerpt">{post.data.excerpt}</p>
+        </header>
+
+        <div class="about-section">
+            <Content />
+        </div>
+
+        <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #e0e0e0;">
+            <a href="/writing" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: #666; text-decoration: none; border-bottom: 1px solid #666;">
+                ← back to writing
+            </a>
+        </div>
+    </article>
+</BaseLayout>

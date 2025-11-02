@@ -1,0 +1,15 @@
+{
+  "title": "Wooj",
+  "description": "Lighting company I started in Brooklyn. We 3D-print cordless lamps from recycled plastic. 45 printers running made-to-order production!",
+  "status": "2021–now",
+  "year": "2021",
+  "category": "Product",
+  "order": 1,
+  "buttons": [
+    {
+      "text": "Visit Site",
+      "url": "https://wooj.design",
+      "style": "primary"
+    }
+  ]
+}

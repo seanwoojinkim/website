@@ -1,0 +1,20 @@
+{
+  "title": "Calming Clouds",
+  "description": "Slow-moving clouds for HRV biofeedback training. Something calming to look at while doing breathing exercises. In progress!",
+  "status": "2025 — In Progress",
+  "year": "2025",
+  "category": "Generative",
+  "order": 4,
+  "buttons": [
+    {
+      "text": "Launch",
+      "url": "https://p5-visualizations.vercel.app/clouds/",
+      "style": "primary"
+    },
+    {
+      "text": "Test",
+      "url": "https://p5-visualizations.vercel.app/clouds/examples/test-noise-engine.html",
+      "style": "secondary"
+    }
+  ]
+}

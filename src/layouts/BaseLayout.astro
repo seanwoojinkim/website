@@ -1,0 +1,65 @@
+---
+import '../styles/style.css';
+
+interface Props {
+  title: string;
+  activePage?: 'work' | 'writing' | 'about';
+  description?: string;
+}
+
+const { title, activePage, description = 'Interactive systems, generative art, and biometric experiments exploring human connection through computational media.' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content={description}>
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={description}>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content={canonicalURL}>
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content={title}>
+    <meta name="twitter:description" content={description}>
+
+    <!-- RSS Feed -->
+    <link rel="alternate" type="application/rss+xml" title="Sean Kim — Writing" href="/rss.xml" />
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="/" class="logo">Sean Kim</a>
+            <div class="nav-links">
+                <a href="/" class={activePage === 'work' ? 'active' : ''}>Work</a>
+                <a href="/writing" class={activePage === 'writing' ? 'active' : ''}>Writing</a>
+                <a href="/about" class={activePage === 'about' ? 'active' : ''}>About</a>
+            </div>
+        </nav>
+
+        <slot />
+
+        <footer>
+            <span>© 2025 Sean Kim</span>
+            <div style="display: flex; gap: 20px;">
+                <a href="mailto:seanwoojinkim@gmail.com">Email</a>
+                <a href="https://github.com/seanwoojinkim" target="_blank">GitHub</a>
+                <a href="https://instagram.com/seanwooj" target="_blank">Instagram</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

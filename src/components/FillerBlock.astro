@@ -1,0 +1,12 @@
+---
+interface Props {
+    variant?: 1 | 2 | 3;
+}
+
+const { variant } = Astro.props;
+const variantClass = variant ? `variant-${variant}` : '';
+---
+
+<div class={`filler-block ${variantClass}`}>
+    <!-- Empty filler block with subtle gradient -->
+</div>

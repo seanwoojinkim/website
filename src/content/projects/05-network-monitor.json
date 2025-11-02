@@ -1,0 +1,15 @@
+{
+  "title": "Network Monitor",
+  "description": "macOS app for discovering devices on local network. Built because I kept forgetting the terminal command and wanted something nice to look at.",
+  "status": "2025",
+  "year": "2025",
+  "category": "Tool",
+  "order": 5,
+  "buttons": [
+    {
+      "text": "GitHub",
+      "url": "https://github.com/seanwoojinkim/network-monitor",
+      "style": "primary"
+    }
+  ]
+}

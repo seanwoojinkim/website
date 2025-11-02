@@ -1,0 +1,20 @@
+{
+  "title": "Koi Simulation",
+  "description": "Cute koi fish swimming around with brush textures and audio reactivity. 31 varieties of koi!",
+  "status": "2025",
+  "year": "2025",
+  "category": "Generative",
+  "order": 2,
+  "buttons": [
+    {
+      "text": "Launch",
+      "url": "https://p5-visualizations.vercel.app/flocking/",
+      "style": "primary"
+    },
+    {
+      "text": "Editor",
+      "url": "https://p5-visualizations.vercel.app/flocking/koi-editor.html",
+      "style": "secondary"
+    }
+  ]
+}

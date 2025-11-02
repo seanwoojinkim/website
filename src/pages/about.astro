@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+
+const aboutPage = await getEntry('pages', 'about');
+const { Content } = await aboutPage.render();
+---
+
+<BaseLayout title="About — Sean Kim" activePage="about">
+    <header>
+        <h1>{aboutPage.data.title}</h1>
+        {aboutPage.data.subtitle && (
+            <p class="subtitle">
+                {aboutPage.data.subtitle}
+            </p>
+        )}
+    </header>
+
+    <div class="about-content">
+        <Content />
+
+        <div class="contact-methods">
+            <div class="contact-item">
+                <div class="contact-label">Email</div>
+                <div class="contact-value">
+                    <a href="mailto:seanwoojinkim@gmail.com">seanwoojinkim@gmail.com</a>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-label">GitHub</div>
+                <div class="contact-value">
+                    <a href="https://github.com/seanwoojinkim" target="_blank">github.com/seanwoojinkim</a>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-label">Instagram</div>
+                <div class="contact-value">
+                    <a href="https://instagram.com/seanwooj" target="_blank">@seanwooj</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</BaseLayout>
