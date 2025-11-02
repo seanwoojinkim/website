@@ -331,6 +331,10 @@ h1 {
     transition: background 0.2s ease;
 }
 
+.writing-item:last-child {
+    border-bottom: none;
+}
+
 .writing-item:hover {
     background: rgba(255, 255, 255, 0.3);
 }

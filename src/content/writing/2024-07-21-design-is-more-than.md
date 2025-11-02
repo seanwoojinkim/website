@@ -48,7 +48,6 @@ And who knows? Maybe the techniques you develop through your practice will push 
 
 That's the beauty of a true design practice—it's always evolving, always pushing forward. And that's something worth protecting, even as we find ways to share and grow together.
 
----
 
 ## Appendix: Tools and Resources We Use
 
