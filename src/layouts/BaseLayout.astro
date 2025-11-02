@@ -2,6 +2,7 @@
 import '../styles/style.css';
 import { ViewTransitions } from 'astro:transitions';
 import KoiBackground from '../components/KoiBackground.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 
 interface Props {
   title: string;
@@ -19,6 +20,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
+
+    <!-- Theme initialization - runs before render to prevent flash -->
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('theme-preference');
+        if (stored === 'dark') {
+          document.documentElement.classList.add('dark-mode');
+        }
+      })();
+    </script>
+
     <ViewTransitions />
 
     <!-- SEO Meta Tags -->
@@ -49,6 +61,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
                 <a href="/" class={activePage === 'work' ? 'active' : ''}>Work</a>
                 <a href="/writing" class={activePage === 'writing' ? 'active' : ''}>Writing</a>
                 <a href="/about" class={activePage === 'about' ? 'active' : ''}>About</a>
+                <ThemeToggle />
             </div>
         </nav>
 

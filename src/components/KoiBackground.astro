@@ -138,9 +138,14 @@
         console.log('FPS:', Math.round(p.frameRate()), '| Cache size:', brushTextures.tintCache.size);
       }
 
-      // Subtle background - almost transparent
+      // Subtle background - theme-aware
       p.clear();
-      p.background(255, 255, 255, 10);
+      const isDarkMode = document.documentElement.classList.contains('dark-mode');
+      if (isDarkMode) {
+        p.background(10, 10, 15, 10);  // Dark blue-black with low alpha
+      } else {
+        p.background(255, 255, 255, 10);  // Light mode
+      }
 
       // Update mouse target (only when mouse is actually moving on canvas)
       if (p.mouseX >= 0 && p.mouseY >= 0 && p.mouseX <= p.width && p.mouseY <= p.height &&
@@ -218,5 +223,10 @@
     z-index: -1;
     pointer-events: auto;  /* Enable mouse interaction */
     opacity: 0.6;
+    transition: opacity 0.5s ease;
+  }
+
+  html.dark-mode #koi-canvas {
+    opacity: 0.5;  /* Slightly reduced for dark mode */
   }
 </style>
