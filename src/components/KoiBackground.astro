@@ -1,0 +1,210 @@
+---
+// KoiBackground.astro - Animated koi swimming in the background
+---
+
+<div id="koi-canvas"></div>
+
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+
+<script>
+  import { FlockManager } from '../lib/koi/flock-manager.js';
+  import { KoiRenderer } from '../lib/koi/koi-renderer.js';
+  import { BrushTextures } from '../lib/koi/brush-textures.js';
+  import { SVGParser } from '../lib/koi/svg-parser.js';
+  import { DEFAULT_SHAPE_PARAMS } from '../lib/koi/koi-params.js';
+
+  // Wait for p5 to load from CDN
+  function initKoi() {
+    if (typeof p5 === 'undefined') {
+      setTimeout(initKoi, 50);
+      return;
+    }
+
+    console.log('🐟 Initializing koi...');
+
+    // Global state
+    let flock;
+    let renderer;
+    let brushTextures;
+    let svgVertices = {
+      body: null,
+      tail: null,
+      head: null,
+      pectoralFin: null,
+      dorsalFin: null,
+      ventralFin: null
+    };
+
+    // Brush textures
+    let brushTextureImages = {
+      body: null,
+      fin: null,
+      tail: null,
+      spots: [],
+      paper: null
+    };
+
+    // Flocking parameters
+    const params = {
+      numBoids: 5,  // Increased from 3 to 5 koi
+      maxSpeed: 0.6,  // Increased from 0.4 for more movement
+      maxForce: 0.05, // Increased from 0.03 for more responsive steering
+      separationWeight: 0.9,
+      alignmentWeight: 1.2,  // Increased to keep them moving together
+      cohesionWeight: 1.0,   // Increased to keep them grouped
+      attractionWeight: 1.2  // Increased mouse attraction strength
+    };
+
+    // Mouse tracking
+    let mouseTarget = null;
+
+    // Create p5 sketch
+    const sketch = (p) => {
+    p.preload = async function() {
+      // Load brush textures
+      brushTextureImages.body = p.loadImage('/koi/brushstrokes/body-processed.png');
+      brushTextureImages.fin = p.loadImage('/koi/brushstrokes/fin.png');
+      brushTextureImages.tail = p.loadImage('/koi/brushstrokes/tail.png');
+      brushTextureImages.spots = [
+        p.loadImage('/koi/brushstrokes/spot-1-processed.png'),
+        p.loadImage('/koi/brushstrokes/spot-2-processed.png'),
+        p.loadImage('/koi/brushstrokes/spot-3-processed.png'),
+        p.loadImage('/koi/brushstrokes/spot-4-processed.png'),
+        p.loadImage('/koi/brushstrokes/spot-5-processed.png')
+      ];
+      brushTextureImages.paper = p.loadImage('/koi/brushstrokes/paper.png');
+
+      // Load SVG body parts
+      svgVertices.body = await SVGParser.loadSVGFromURL(
+        '/koi/body-parts/body.svg', 20, { width: 16, height: 5.2 }
+      );
+      svgVertices.tail = await SVGParser.loadSVGFromURL(
+        '/koi/body-parts/tail.svg', 20, { width: 6, height: 4 }
+      );
+      svgVertices.head = await SVGParser.loadSVGFromURL(
+        '/koi/body-parts/head.svg', 20, { width: 7.5, height: 5.0 }
+      );
+      svgVertices.pectoralFin = await SVGParser.loadSVGFromURL(
+        '/koi/body-parts/pectoral-fin.svg', 20, { width: 4.5, height: 2 }
+      );
+      svgVertices.dorsalFin = await SVGParser.loadSVGFromURL(
+        '/koi/body-parts/dorsal-fin.svg', 20, { width: 4, height: 5 }
+      );
+      svgVertices.ventralFin = await SVGParser.loadSVGFromURL(
+        '/koi/body-parts/ventral-fin.svg', 20, { width: 3, height: 1.5 }
+      );
+    };
+
+    p.setup = function() {
+      const canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+      canvas.parent('koi-canvas');
+
+      // Initialize brush textures
+      brushTextures = new BrushTextures();
+      brushTextures.loadImages(brushTextureImages);
+      brushTextures.setP5Instance(p);
+
+      // Initialize renderer
+      renderer = new KoiRenderer(brushTextures);
+
+      // Initialize flock
+      const tempVec = p.createVector(0, 0);
+      const p5Instance = { Vector: tempVec.constructor };
+
+      flock = new FlockManager(
+        params.numBoids,
+        p.width,
+        p.height,
+        {
+          random: (...args) => p.random(...args),
+          createVector: (...args) => p.createVector(...args),
+          floor: (...args) => p.floor(...args),
+          p5Instance: p5Instance
+        }
+      );
+
+      console.log('🐟 Ready:', params.numBoids, 'koi swimming');
+    };
+
+    p.draw = function() {
+      // Performance monitoring (log every 5 seconds)
+      if (p.frameCount % 300 === 0) {
+        console.log('FPS:', Math.round(p.frameRate()), '| Cache size:', brushTextures.tintCache.size);
+      }
+
+      // Subtle background - almost transparent
+      p.clear();
+      p.background(255, 255, 255, 10);
+
+      // Update mouse target (only when mouse is actually moving on canvas)
+      if (p.mouseX >= 0 && p.mouseY >= 0 && p.mouseX <= p.width && p.mouseY <= p.height &&
+          (p.mouseX !== p.pmouseX || p.mouseY !== p.pmouseY)) {
+        mouseTarget = { x: p.mouseX, y: p.mouseY };
+      } else if (p.mouseX < 0 || p.mouseY < 0 || p.mouseX > p.width || p.mouseY > p.height) {
+        mouseTarget = null;  // Clear when mouse leaves canvas
+      }
+      // Otherwise keep last known position
+
+      // Update flock with mouse attraction
+      flock.update(params, mouseTarget);
+
+      // Render each koi
+      for (let boid of flock.boids) {
+        const waveTime = p.frameCount * 0.1 + boid.animationOffset;
+        const sizeScale = 4.5;  // Increased from 3 to 4.5 for even larger koi
+
+        renderer.render(
+          p,
+          boid.position.x,
+          boid.position.y,
+          boid.velocity.heading(),
+          {
+            shapeParams: DEFAULT_SHAPE_PARAMS,
+            colorParams: boid.color,
+            pattern: boid.pattern,
+            animationParams: {
+              waveTime,
+              sizeScale: boid.sizeMultiplier * sizeScale,
+              waveAmplitudeScale: boid.sizeMultiplier,
+              lengthMultiplier: boid.lengthMultiplier,
+              tailLength: boid.tailLength
+            },
+            modifiers: {
+              brightnessBoost: 0,
+              saturationBoost: 0,
+              sizeScale: 1
+            },
+            boidSeed: Math.floor(boid.animationOffset * 1000),
+            svgVertices: svgVertices
+          }
+        );
+      }
+    };
+
+    p.windowResized = function() {
+      p.resizeCanvas(p.windowWidth, p.windowHeight);
+      flock.width = p.width;
+      flock.height = p.height;
+    };
+    };
+
+    // Initialize p5
+    new p5(sketch);
+  }
+
+  // Start initialization
+  initKoi();
+</script>
+
+<style>
+  #koi-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: auto;  /* Enable mouse interaction */
+    opacity: 0.6;
+  }
+</style>

@@ -151,10 +151,9 @@ nav {
 }
 
 .nav-links a {
-    font-size: var(--text-xs);
+    font-size: var(--text-base);
     font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: -0.01em;
     text-decoration: none;
     color: #666;
     transition: color 0.2s ease;
