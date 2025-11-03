@@ -1,11 +1,11 @@
 ---
 title: "About"
 ---
-I'm Sean Woojin Kim (seanwooj), a designer and coder in Brooklyn. 
+I'm <span class="p-name">Sean Woojin Kim</span> (seanwooj), a designer and coder in Brooklyn. 
 
-I run [Wooj](https://wooj.design), a lighting company I started in 2021. We design and 3D-print cordless lamps from recycled plastic in Brooklyn. 45 printers, made-to-order production, all in-house. :)
+I run [Wooj](https://wooj.design), a lighting company I started in 2021. We design and 3D-print lamps from recycled plastic in Brooklyn. 45 printers, made-to-order production, all in-house. :)
 
-These days, I'm trying to do more work on interactive systems: generative art, tools and visualizations that track heart rate and brainwaves, and little experiments on how people connect through technology.
+<span class="p-note">These days, I'm trying to do more work on interactive systems: generative art, tools and visualizations that track heart rate and brainwaves, and little experiments on how people connect through technology.</span>
 
 Right now I'm working on a small installation that visualizes when people's physiology syncs up in real time using heart rate monitoring and consumer EEG.
 
