@@ -8,9 +8,9 @@ const writing = (await getCollection('writing')).sort((a, b) =>
 );
 ---
 
-<BaseLayout title="Writing — Sean Kim" activePage="writing">
+<BaseLayout title="Notes — Sean Kim" activePage="writing">
     <header>
-        <h1>Writing</h1>
+        <h1>Notes</h1>
         <p class="subtitle">
             In progress thoughts as I try to figure out how to build things.
         </p>
@@ -20,7 +20,16 @@ const writing = (await getCollection('writing')).sort((a, b) =>
         <a href="/rss.xml">RSS Feed</a>
     </div>
 
-    <div class="writing-list">
+    <div class="writing-list h-feed">
+        <!-- h-feed metadata -->
+        <div hidden aria-hidden="true">
+            <span class="p-name">Sean Kim's Notes</span>
+            <a href="https://seanwooj.in/writing" class="u-url">Writing Archive</a>
+            <div class="p-author h-card">
+                <a href="https://seanwooj.in" class="p-name u-url">Sean Woojin Kim</a>
+            </div>
+        </div>
+
         {writing.map(post => (
             <WritingItem
                 title={post.data.title}

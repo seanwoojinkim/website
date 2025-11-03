@@ -14,10 +14,18 @@ const fillersNeeded = (COLUMNS - (projects.length % COLUMNS)) % COLUMNS;
 
 <BaseLayout title="Sean Kim — Interactive Systems" activePage="work">
     <header>
-        <h1>Selected Work</h1>
-        <p class="subtitle">
-            Things I've been having fun working on and learning.
-        </p>
+        <!-- h-card for IndieWeb identity -->
+        <div class="h-card" style="display: contents;">
+            <h1>
+                <span class="p-name">Sean Woojin Kim</span> — Selected Work
+            </h1>
+            <p class="subtitle p-note">
+                Interactive systems designer and researcher exploring generative art, biometric installations, and computational media.
+            </p>
+            <!-- Hidden but parseable URLs for IndieWeb -->
+            <a href="https://seanwooj.in" class="u-url u-uid" hidden aria-hidden="true">https://seanwooj.in</a>
+            <a href="mailto:seanwoojinkim@gmail.com" class="u-email" hidden aria-hidden="true">Email</a>
+        </div>
     </header>
 
     <div class="grid">

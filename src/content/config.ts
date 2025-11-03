@@ -25,6 +25,11 @@ const writing = defineCollection({
     date: z.date(),
     tags: z.array(z.string()),
     status: z.enum(['published', 'draft', 'coming-soon']).default('published'),
+    // POSSE: Syndication URLs for cross-posting to other platforms
+    syndication: z.array(z.object({
+      platform: z.string(),
+      url: z.string(),
+    })).optional(),
   }),
 });
 

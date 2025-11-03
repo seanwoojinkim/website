@@ -19,25 +19,30 @@ const { Content } = await aboutPage.render();
     <div class="about-content">
         <Content />
 
-        <div class="contact-methods">
+        <div class="contact-methods h-card">
+            <!-- Hidden h-card identity -->
+            <div hidden aria-hidden="true">
+                <a href="https://seanwooj.in" class="u-url u-uid p-name">Sean Woojin Kim</a>
+            </div>
+
             <div class="contact-item">
                 <div class="contact-label">Email</div>
                 <div class="contact-value">
-                    <a href="mailto:seanwoojinkim@gmail.com">seanwoojinkim@gmail.com</a>
+                    <a href="mailto:seanwoojinkim@gmail.com" class="u-email">seanwoojinkim@gmail.com</a>
                 </div>
             </div>
 
             <div class="contact-item">
                 <div class="contact-label">GitHub</div>
                 <div class="contact-value">
-                    <a href="https://github.com/seanwoojinkim" target="_blank">github.com/seanwoojinkim</a>
+                    <a href="https://github.com/seanwoojinkim" target="_blank" class="u-url" rel="me">github.com/seanwoojinkim</a>
                 </div>
             </div>
 
             <div class="contact-item">
                 <div class="contact-label">Instagram</div>
                 <div class="contact-value">
-                    <a href="https://instagram.com/seanwooj" target="_blank">@seanwooj</a>
+                    <a href="https://instagram.com/seanwooj" target="_blank" class="u-url" rel="me">@seanwooj</a>
                 </div>
             </div>
         </div>

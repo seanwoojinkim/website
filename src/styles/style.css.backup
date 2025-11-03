@@ -38,27 +38,13 @@
 
 /* Design System Variables */
 :root {
-    /* Fluid Type Scale: 1.2 ratio @ 375px → 1.333 ratio @ 1200px */
-    /* Viewport range: 375px - 1200px (825px delta) */
-    /* Formula: clamp(min, preferred, max) */
-
-    /* 12px @ 375px → 13px @ 1200px | UI labels, tags, dates */
-    --text-xs: clamp(0.75rem, 0.7273rem + 0.1212vw, 0.8125rem);
-
-    /* 14px @ 375px → 15px @ 1200px | Secondary text, descriptions */
-    --text-sm: clamp(0.875rem, 0.8523rem + 0.1212vw, 0.9375rem);
-
-    /* 16px @ 375px → 18px @ 1200px | Body text */
-    --text-base: clamp(1rem, 0.9773rem + 0.1212vw, 1.125rem);
-
-    /* 20px @ 375px → 24px @ 1200px | Titles, logo, article excerpts */
-    --text-lg: clamp(1.25rem, 1.1364rem + 0.6061vw, 1.5rem);
-
-    /* 24px @ 375px → 32px @ 1200px | h2 headings */
-    --text-xl: clamp(1.5rem, 1.2727rem + 1.2121vw, 2rem);
-
-    /* 30px @ 375px → 44px @ 1200px | h1 headings */
-    --text-2xl: clamp(1.875rem, 1.5341rem + 1.8182vw, 2.75rem);
+    /* Modular Type Scale (1.25 ratio, 16px base) */
+    --text-xs: 0.8125rem;    /* 13px - UI labels, tags */
+    --text-sm: 0.875rem;     /* 14px - secondary text */
+    --text-base: 1rem;       /* 16px - body text */
+    --text-lg: 1.25rem;      /* 20px - h3, card titles */
+    --text-xl: 1.5625rem;    /* 25px - h2 */
+    --text-2xl: 2rem;        /* 32px - h1 */
 
     /* 8px Grid System */
     --space-1: 0.5rem;   /* 8px */

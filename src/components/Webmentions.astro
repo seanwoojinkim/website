@@ -1,0 +1,379 @@
+---
+import { fetchWebmentions, groupWebmentions, formatWebmentionDate, getPlatformName } from '../utils/webmentions';
+
+interface Props {
+  targetUrl: string;
+}
+
+const { targetUrl } = Astro.props;
+
+// Fetch webmentions at build time
+const mentions = await fetchWebmentions(targetUrl);
+const grouped = groupWebmentions(mentions);
+
+const totalCount = mentions.length;
+const likesCount = grouped.likes.length;
+const repostsCount = grouped.reposts.length;
+const repliesCount = grouped.replies.length;
+const mentionsCount = grouped.mentions.length;
+---
+
+{totalCount > 0 && (
+  <section class="webmentions">
+    <h2>Webmentions</h2>
+
+    <div class="webmentions-summary">
+      {likesCount > 0 && <span>{likesCount} like{likesCount !== 1 ? 's' : ''}</span>}
+      {repostsCount > 0 && <span>{repostsCount} repost{repostsCount !== 1 ? 's' : ''}</span>}
+      {repliesCount > 0 && <span>{repliesCount} {repliesCount !== 1 ? 'replies' : 'reply'}</span>}
+      {mentionsCount > 0 && <span>{mentionsCount} mention{mentionsCount !== 1 ? 's' : ''}</span>}
+    </div>
+
+    {/* Likes - Show as avatars */}
+    {likesCount > 0 && (
+      <div class="webmention-section">
+        <h3>Likes</h3>
+        <div class="webmention-likes">
+          {grouped.likes.map(like => (
+            <a
+              href={like.author.url || like['wm-source']}
+              class="webmention-like"
+              title={`${like.author.name} liked this`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {like.author.photo ? (
+                <img
+                  src={like.author.photo}
+                  alt={like.author.name}
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="webmention-avatar-fallback">
+                  {like.author.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {/* Reposts - Show as avatars */}
+    {repostsCount > 0 && (
+      <div class="webmention-section">
+        <h3>Reposts</h3>
+        <div class="webmention-reposts">
+          {grouped.reposts.map(repost => (
+            <a
+              href={repost.author.url || repost['wm-source']}
+              class="webmention-repost"
+              title={`${repost.author.name} reposted this`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {repost.author.photo ? (
+                <img
+                  src={repost.author.photo}
+                  alt={repost.author.name}
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="webmention-avatar-fallback">
+                  {repost.author.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {/* Replies - Show full content */}
+    {repliesCount > 0 && (
+      <div class="webmention-section">
+        <h3>Replies</h3>
+        <div class="webmention-replies">
+          {grouped.replies.map(reply => (
+            <article class="webmention-reply">
+              <div class="webmention-reply-header">
+                <a
+                  href={reply.author.url || reply['wm-source']}
+                  class="webmention-reply-author"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {reply.author.photo && (
+                    <img
+                      src={reply.author.photo}
+                      alt={reply.author.name}
+                      width="40"
+                      height="40"
+                      loading="lazy"
+                    />
+                  )}
+                  <span class="webmention-reply-author-name">{reply.author.name}</span>
+                </a>
+                <div class="webmention-reply-meta">
+                  <time datetime={reply.published || reply['wm-received']}>
+                    {formatWebmentionDate(reply.published || reply['wm-received'])}
+                  </time>
+                  <span class="webmention-platform">{getPlatformName(reply['wm-source'])}</span>
+                </div>
+              </div>
+              {reply.content && (
+                <div class="webmention-reply-content">
+                  {reply.content.html ? (
+                    <div set:html={reply.content.html} />
+                  ) : (
+                    <p>{reply.content.text}</p>
+                  )}
+                </div>
+              )}
+              <div class="webmention-reply-footer">
+                <a
+                  href={reply['wm-source']}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="webmention-source-link"
+                >
+                  View original →
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {/* Mentions - Show as list */}
+    {mentionsCount > 0 && (
+      <div class="webmention-section">
+        <h3>Mentions</h3>
+        <div class="webmention-mentions">
+          {grouped.mentions.map(mention => (
+            <article class="webmention-mention">
+              <a
+                href={mention['wm-source']}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <strong>{mention.author.name}</strong> mentioned this
+                {mention.content?.text && (
+                  <span class="webmention-mention-preview">
+                    {mention.content.text.slice(0, 150)}
+                    {mention.content.text.length > 150 ? '...' : ''}
+                  </span>
+                )}
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+)}
+
+<style>
+  .webmentions {
+    margin-top: var(--space-8, 5rem);
+    padding-top: var(--space-4, 2rem);
+    border-top: var(--border-major);
+  }
+
+  .webmentions h2 {
+    font-size: var(--text-xl, 1.5rem);
+    margin-bottom: var(--space-2, 1rem);
+    color: var(--color-text-primary);
+  }
+
+  .webmentions-summary {
+    display: flex;
+    gap: var(--space-2, 1rem);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-4, 2rem);
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--color-text-secondary);
+  }
+
+  .webmention-section {
+    margin-bottom: var(--space-4, 2rem);
+  }
+
+  .webmention-section h3 {
+    font-size: var(--text-lg, 1.25rem);
+    margin-bottom: var(--space-2, 1rem);
+    color: var(--color-text-primary);
+  }
+
+  /* Likes & Reposts - Avatar Grid */
+  .webmention-likes,
+  .webmention-reposts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1, 0.5rem);
+  }
+
+  .webmention-like,
+  .webmention-repost {
+    display: block;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 48px;
+    height: 48px;
+    transition: transform 0.2s ease;
+  }
+
+  .webmention-like:hover,
+  .webmention-repost:hover {
+    transform: scale(1.1);
+  }
+
+  .webmention-like img,
+  .webmention-repost img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .webmention-avatar-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-text-primary);
+    color: var(--color-bg-primary);
+    font-weight: 600;
+    font-size: var(--text-lg, 1.25rem);
+  }
+
+  /* Replies - Full Content */
+  .webmention-replies {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3, 1.5rem);
+  }
+
+  .webmention-reply {
+    padding: var(--space-3, 1.5rem);
+    background: var(--color-bg-secondary);
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+  }
+
+  .webmention-reply:hover {
+    background: var(--color-bg-secondary-hover);
+  }
+
+  .webmention-reply-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-2, 1rem);
+    flex-wrap: wrap;
+    gap: var(--space-2, 1rem);
+  }
+
+  .webmention-reply-author {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1, 0.5rem);
+    text-decoration: none;
+    color: var(--color-text-primary);
+  }
+
+  .webmention-reply-author:hover .webmention-reply-author-name {
+    text-decoration: underline;
+  }
+
+  .webmention-reply-author img {
+    border-radius: 50%;
+  }
+
+  .webmention-reply-author-name {
+    font-weight: 600;
+  }
+
+  .webmention-reply-meta {
+    display: flex;
+    gap: var(--space-1, 0.5rem);
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--color-text-secondary);
+  }
+
+  .webmention-platform {
+    font-style: italic;
+  }
+
+  .webmention-reply-content {
+    margin-bottom: var(--space-1, 0.5rem);
+    line-height: var(--leading-normal, 1.6);
+    color: var(--color-text-primary);
+  }
+
+  .webmention-reply-footer {
+    font-size: var(--text-sm, 0.875rem);
+  }
+
+  .webmention-source-link {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+
+  .webmention-source-link:hover {
+    text-decoration: underline;
+    color: var(--color-text-primary);
+  }
+
+  /* Mentions - List */
+  .webmention-mentions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2, 1rem);
+  }
+
+  .webmention-mention {
+    padding: var(--space-2, 1rem);
+    background: var(--color-bg-secondary);
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+  }
+
+  .webmention-mention:hover {
+    background: var(--color-bg-secondary-hover);
+  }
+
+  .webmention-mention a {
+    text-decoration: none;
+    color: var(--color-text-primary);
+    display: block;
+  }
+
+  .webmention-mention a:hover {
+    text-decoration: underline;
+  }
+
+  .webmention-mention-preview {
+    display: block;
+    margin-top: var(--space-1, 0.5rem);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm, 0.875rem);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .webmention-reply-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .webmention-reply-meta {
+      width: 100%;
+    }
+  }
+</style>

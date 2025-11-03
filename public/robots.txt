@@ -1,0 +1,13 @@
+# robots.txt for seanwooj.in
+# IndieWeb-friendly crawling configuration
+
+# Allow all crawlers for public content
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://seanwooj.in/sitemap-index.xml
+
+# IndieWeb note:
+# This site supports webmentions and participates in the IndieWeb.
+# Crawlers are welcome to discover h-card, h-entry, and h-feed markup.

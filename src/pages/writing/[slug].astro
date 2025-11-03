@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import Webmentions from '../../components/Webmentions.astro';
 
 export async function getStaticPaths() {
   const writing = await getCollection('writing', ({ data }) => {
@@ -23,27 +24,98 @@ const formatDate = (date: Date) => {
     year: 'numeric'
   });
 };
+
+// ISO 8601 format for dt-published
+const dateISO = post.data.date.toISOString();
+
+// Construct absolute URL for u-url
+const canonicalURL = new URL(`/writing/${post.slug}/`, Astro.site).href;
+
+// Check if post has syndication links (POSSE)
+const hasSyndication = post.data.syndication && post.data.syndication.length > 0;
 ---
 
 <BaseLayout title={`${post.data.title} — sean kim`} activePage="writing">
-    <article class="about-content">
+    <article class="about-content h-entry">
         <header style="margin-bottom: 40px;">
-            <h1 style="margin-bottom: 12px;">{post.data.title}</h1>
+            <h1 class="p-name" style="margin-bottom: 12px;">{post.data.title}</h1>
             <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-                <div class="writing-date">{formatDate(post.data.date)}</div>
+                <time class="writing-date dt-published" datetime={dateISO}>{formatDate(post.data.date)}</time>
                 <div class="writing-tags">
-                    {post.data.tags.map(tag => <span class="tag">{tag}</span>)}
+                    {post.data.tags.map(tag => <span class="tag p-category">{tag}</span>)}
                 </div>
             </div>
             <p class="article-excerpt">{post.data.excerpt}</p>
         </header>
 
-        <div class="about-section">
+        <!-- Hidden but required h-entry properties -->
+        <a href={canonicalURL} class="u-url" hidden aria-hidden="true">Permalink</a>
+        <div class="p-author h-card" hidden aria-hidden="true">
+            <a href="https://seanwooj.in" class="p-name u-url">Sean Woojin Kim</a>
+        </div>
+
+        <div class="about-section e-content">
             <Content />
         </div>
 
         <div class="article-nav">
             <a href="/writing">← back to writing</a>
         </div>
+
+        <!-- Syndication Links (POSSE) -->
+        {hasSyndication && (
+            <div class="syndication-links">
+                <span class="syndication-label">Also posted on:</span>
+                {post.data.syndication!.map(({ platform, url }) => (
+                    <a href={url} class="u-syndication syndication-link" target="_blank" rel="noopener noreferrer">
+                        {platform}
+                    </a>
+                ))}
+            </div>
+        )}
+
+        <!-- Webmentions Section -->
+        <Webmentions targetUrl={canonicalURL} />
     </article>
 </BaseLayout>
+
+<style>
+.syndication-links {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.syndication-label {
+    margin-right: 0.5rem;
+    font-weight: 500;
+}
+
+.syndication-link {
+    margin-right: 1rem;
+    color: #0066cc;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.syndication-link:hover {
+    text-decoration: underline;
+    color: #0052a3;
+}
+
+/* Dark mode support */
+:global(.dark-mode) .syndication-links {
+    border-top-color: #333;
+    color: #aaa;
+}
+
+:global(.dark-mode) .syndication-link {
+    color: #4d9fff;
+}
+
+:global(.dark-mode) .syndication-link:hover {
+    color: #7ab8ff;
+}
+</style>

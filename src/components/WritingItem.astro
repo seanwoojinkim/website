@@ -19,15 +19,21 @@ const formatDate = (date: Date) => {
 
 const dateDisplay = status === 'coming-soon' ? 'coming soon' : formatDate(date);
 const href = status === 'coming-soon' ? '#' : `/writing/${slug}`;
+const dateISO = date.toISOString();
+const canonicalURL = status === 'coming-soon' ? '#' : new URL(`/writing/${slug}/`, Astro.site).href;
 ---
 
-<article class="writing-item">
-    <div class="writing-date">{dateDisplay}</div>
+<article class="writing-item h-entry">
+    <time class="writing-date dt-published" datetime={dateISO}>{dateDisplay}</time>
     <div class="writing-content">
-        <h3><a href={href}>{title}</a></h3>
-        <p class="writing-excerpt">{excerpt}</p>
+        <h3 class="p-name"><a href={href} class="u-url">{title}</a></h3>
+        <p class="writing-excerpt p-summary">{excerpt}</p>
         <div class="writing-tags">
-            {tags.map(tag => <span class="tag">{tag}</span>)}
+            {tags.map(tag => <span class="tag p-category">{tag}</span>)}
         </div>
+    </div>
+    <!-- Hidden author info for h-entry -->
+    <div class="p-author h-card" hidden aria-hidden="true">
+        <a href="https://seanwooj.in" class="p-name u-url">Sean Woojin Kim</a>
     </div>
 </article>

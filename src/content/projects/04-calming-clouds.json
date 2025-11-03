@@ -10,11 +10,6 @@
       "text": "Launch",
       "url": "https://p5-visualizations.vercel.app/clouds/",
       "style": "primary"
-    },
-    {
-      "text": "Test",
-      "url": "https://p5-visualizations.vercel.app/clouds/examples/test-noise-engine.html",
-      "style": "secondary"
     }
   ]
 }
