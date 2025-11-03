@@ -28,3 +28,7 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Claude Code workflow - keep directory structure but ignore documents
+thoughts/**/*.md
+!thoughts/**/.gitkeep

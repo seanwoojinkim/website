@@ -18,20 +18,15 @@ This document describes the complete AI-assisted development workflow using spec
 
 ## Agent Overview
 
-The workflow uses eight specialized agents:
+The workflow uses five specialized agents:
 
 | Agent | Purpose | Input | Output | Color |
 |-------|---------|-------|--------|-------|
 | **codebase-researcher** | Investigate existing code, document current state | Research question, files | Research document | Blue |
-| **research-coordinator** | Coordinate online research, spawn academic/industry sub-agents | Research question | Online research document | Teal |
-| **academic-researcher** | Search academic literature, evaluate methodology | Research focus (from coordinator) | Academic findings | Orange |
-| **industry-researcher** | Search industry practices, expert insights | Research focus (from coordinator) | Industry findings | Cyan |
 | **implementation-planner** | Design solutions, create phased implementation plans | Requirements, research | Plan document | Purple |
 | **plan-implementer** | Execute plan phases, write code, track progress | Plan document | Code + Implementation doc | Red |
 | **code-reviewer** | Review code quality, verify requirements, teach concepts | Phase completion, plan | Review document + mini-lessons | Green |
 | **synthesis-teacher** | Synthesize learning from full feature, explain patterns | Completed feature docs | Comprehensive learning doc | Yellow |
-
-**Note**: academic-researcher and industry-researcher are sub-agents typically spawned by research-coordinator, not invoked directly by users.
 
 ## Directory Structure
 
@@ -153,7 +148,7 @@ Revisions │ With  │ Approved
 
 ---
 
-### Phase 1A: Codebase Research (Blue Agent)
+### Phase 1: Codebase Research (Blue Agent)
 
 **Agent**: `codebase-researcher`
 
@@ -183,76 +178,6 @@ Revisions │ With  │ Approved
 - Approve moving to planning OR request additional research
 
 **Context Target**: <70%
-
----
-
-### Phase 1B: Online Research (Teal Agent + Sub-agents)
-
-**Agent**: `research-coordinator` (spawns `academic-researcher` and `industry-researcher`)
-
-**Purpose**: Research external knowledge, best practices, academic theory, industry patterns
-
-**Inputs**:
-- Research question about external knowledge
-- Desired depth (quick, medium, deep)
-- Optional: specific focus areas or constraints
-
-**Process**:
-1. Analyze query and determine research strategy
-2. Evaluate required depth based on complexity criteria
-3. Perform initial scoping with WebSearch
-4. Spawn specialized sub-agents in parallel:
-   - `academic-researcher`: For academic papers, studies, theory
-   - `industry-researcher`: For best practices, case studies, expert insights
-5. Cross-validate findings from multiple sources
-6. Apply critical thinking to identify bias and contradictions
-7. Synthesize unified insights with confidence levels
-8. Generate research document
-
-**Outputs**:
-- `thoughts/research/YYYY-MM-DD-[ticket]-online-research.md`
-- Academic findings (if applicable)
-- Industry best practices and case studies
-- Source quality assessment
-- Synthesized recommendations with confidence levels
-
-**Human Actions**:
-- Review research findings
-- Evaluate recommendations
-- Decide how to integrate with codebase findings
-- Approve moving to planning
-
-**Context Target**: <70% (coordinator), sub-agents manage their own context
-
-**Research Patterns**:
-
-1. **Parallel Research** (most comprehensive):
-   ```
-   User: "Investigate vector matching for affinity recommendations"
-   → Spawn codebase-researcher: "Research our current matching implementation"
-   → Spawn research-coordinator: "Research vector matching algorithms and best practices"
-     → research-coordinator spawns:
-       - academic-researcher: "Research vector similarity algorithms"
-       - industry-researcher: "Research recommendation system implementations"
-   → Synthesize: external knowledge + our current implementation → recommendations
-   ```
-
-2. **Online-Only Research**:
-   ```
-   User: "Research best practices for mobile-first UI design"
-   → Spawn research-coordinator only
-     → Spawns industry-researcher: "Expert insights on mobile-first design"
-   → Generate insights for future planning
-   ```
-
-3. **Deep Academic Research**:
-   ```
-   User: "Research cognitive load theory in UI design"
-   → Spawn research-coordinator
-     → Spawns academic-researcher: "Cognitive load research"
-     → Spawns industry-researcher: "Practical UI applications"
-   → Synthesize theory + practice
-   ```
 
 ---
 
@@ -507,46 +432,18 @@ Throughout the workflow, humans are essential at these points:
 
 ## Workflow Variations
 
-### Variation 1: Comprehensive Research (Complex/Novel Features)
-
-```
-Human Question → [Parallel]:
-  - codebase-researcher (internal understanding)
-  - research-coordinator (external knowledge)
-    → academic-researcher + industry-researcher
-→ Synthesize both → implementation-planner → Phase Loop → synthesis-teacher
-```
-
-Use when:
-- Novel feature requiring external knowledge
-- Need to understand both internal code AND best practices
-- Want to compare current implementation to industry standards
-
-### Variation 2: Codebase-Only Research (Internal Focus)
+### Variation 1: Research-First (Complex/Unfamiliar Features)
 
 ```
 Human Question → codebase-researcher → implementation-planner → Phase Loop → synthesis-teacher
 ```
 
 Use when:
-- Unfamiliar codebase area but standard patterns
+- Unfamiliar codebase area
 - Complex existing integration
 - Need to understand current patterns first
-- External best practices not needed
 
-### Variation 3: Online-Only Research (Knowledge Building)
-
-```
-Human Question → research-coordinator → academic-researcher + industry-researcher → (Optional) implementation-planner
-```
-
-Use when:
-- Building domain knowledge before implementation
-- Researching new technologies or approaches
-- Investigating best practices for future projects
-- No immediate implementation planned
-
-### Variation 4: Direct Planning (Well-Understood Features)
+### Variation 2: Direct Planning (Well-Understood Features)
 
 ```
 Human Requirements → implementation-planner → Phase Loop → synthesis-teacher
@@ -554,11 +451,10 @@ Human Requirements → implementation-planner → Phase Loop → synthesis-teach
 
 Use when:
 - Clear requirements
-- Familiar domain AND codebase
+- Familiar domain
 - Similar to previous work
-- No research needed
 
-### Variation 5: Quick Implementation (Tiny Changes)
+### Variation 3: Quick Implementation (Tiny Changes)
 
 ```
 Human → direct coding (no agents)
@@ -811,23 +707,20 @@ Potential workflow improvements:
 5. Participate at human checkpoints
 6. Review learning synthesis at end
 
-### Example Flows
-
-**Example 1: Comprehensive Research Flow**
+### Example Flow
 
 ```bash
-# Parallel research (internal + external knowledge)
-"Investigate rate limiting. Compare our implementation to industry best practices"
-→ Spawns codebase-researcher + research-coordinator in parallel
+# Start research
+"Research how authentication works in this codebase"
 
-# Review both research outputs, then plan
-"Create implementation plan to improve our rate limiting based on research findings"
+# Review research output, then plan
+"Create implementation plan for adding OAuth2 authentication"
 
-# Implement phases
-"Implement phase 1 of the rate limiting improvements"
+# Review plan, then implement
+"Implement phase 1 of the OAuth2 plan"
 
-# Review each phase
-"Review phase 1 of rate limiting implementation"
+# After implementation, review
+"Review phase 1 of OAuth2 implementation"
 
 # After review approval, QA
 [Test feature manually]
@@ -835,43 +728,7 @@ Potential workflow improvements:
 # Repeat for remaining phases...
 
 # After all phases complete
-"Create learning synthesis for rate limiting feature"
-```
-
-**Example 2: Codebase-Only Research Flow**
-
-```bash
-# Internal research only
-"Research how authentication works in this codebase"
-
-# Review research output, then plan
-"Create implementation plan for adding OAuth2 authentication"
-
-# Implement and review phases...
-"Implement phase 1 of the OAuth2 plan"
-"Review phase 1 of OAuth2 implementation"
-
-# Continue through phases...
-
-# Final synthesis
 "Create learning synthesis for OAuth2 feature"
-```
-
-**Example 3: Online Research First Flow**
-
-```bash
-# Build knowledge before implementation
-"Research vector similarity algorithms and recommendation system best practices"
-→ Spawns research-coordinator → academic-researcher + industry-researcher
-
-# After understanding external knowledge
-"Research our current recommendation implementation"
-→ Spawns codebase-researcher
-
-# Compare and plan
-"Create plan to implement vector-based recommendations based on research"
-
-# Continue with implementation phases...
 ```
 
 ## Philosophy: Specs Are The New Code
