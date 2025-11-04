@@ -4,7 +4,7 @@
  */
 
 import { Boid } from './boid.js';
-import { findNeighbors, calculateAlignment, calculateCohesion, calculateSeparation, calculateAttraction } from './flocking-forces.js';
+import { findNeighbors, calculateAlignment, calculateCohesion, calculateSeparation, calculateAttraction, calculateEscapeForce } from './flocking-forces.js';
 
 export class FlockManager {
     constructor(numBoids, width, height, p5Funcs) {
@@ -32,13 +32,41 @@ export class FlockManager {
      */
     update(params, mouseTarget = null) {
         for (let boid of this.boids) {
-            // Calculate flocking forces
-            const neighbors = findNeighbors(boid, this.boids, boid.perceptionRadius);
-            const forces = this.calculateFlockingForces(boid, neighbors, params, mouseTarget);
+            // Check if this boid is escaping oscillation
+            const isEscaping = boid.getIsEscaping();
+            const escapeDirection = boid.getEscapeDirection();
 
-            // Apply forces and update
-            boid.applyForces(forces);
-            boid.update(params.maxSpeed);
+            if (isEscaping && escapeDirection !== null) {
+                // Apply strong escape force to break out of oscillation
+                const escapeForce = calculateEscapeForce(
+                    boid,
+                    escapeDirection,
+                    params.maxSpeed,
+                    params.maxForce,
+                    this.p5
+                );
+
+                // Override normal forces with escape force
+                boid.applyForces({
+                    alignment: this.p5Funcs.createVector(),
+                    cohesion: this.p5Funcs.createVector(),
+                    separation: escapeForce
+                }, 0, this.p5Funcs.random);
+            } else {
+                // Check if this boid is independent
+                const isIndependent = boid.getIsIndependent();
+
+                if (!isIndependent) {
+                    // Normal flocking behavior
+                    const neighbors = findNeighbors(boid, this.boids, boid.perceptionRadius);
+                    const forces = this.calculateFlockingForces(boid, neighbors, params, mouseTarget);
+                    boid.applyForces(forces, neighbors.length, this.p5Funcs.random);
+                }
+                // If independent, don't apply flocking forces - they just drift
+            }
+
+            // Update physics
+            boid.update(params.maxSpeed, this.p5Funcs.random);
             boid.edges(this.width, this.height);
         }
     }
